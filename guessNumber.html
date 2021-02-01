@@ -1,0 +1,241 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="author" content="saurabh kumar">
+
+		<title>Number Guess Web App</title>
+
+		<style>
+                
+
+body {
+        width: 50%;
+        max-width: 800px;
+        min-width: 480px;
+        margin: 0 auto;
+	background-color: pink;
+	font-family: Arial;
+}
+
+.button {
+	margin-top: 10px;
+	border-radius: 10px;
+	border-color: black;
+	border-style: solid;
+	border-width: 1px;
+	width: 50%;
+	padding: 5px;
+	text-align: center;
+	font-weight: bold;
+}
+
+.historyAreaDivClass {
+	margin-top: 10px;
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+.game {
+	background-color: grey;
+	border-radius: 10px;
+	border-style: solid;
+	border-width: 3px;
+	border-color: black;
+	padding: 10px;
+}
+
+.statusAreaDivClass {
+	font-size: 100%;
+}
+
+#footerArea {
+	text-align: center;
+	margin-top:5px;
+	font-size: 75%;
+	font-style: italic;
+}
+
+                </style>
+
+		<style media="screen">
+
+		ol {
+			list-style-type: none;
+			padding: 0;
+		}
+
+		ol li {
+			margin: 10px;
+			padding: 10px;
+			border-radius: 5px;
+		}
+
+		.correctSpan {
+			background-color: #28A745;
+			color: white;
+		}
+		.hotSpan {
+			background-color: #DC3545;
+			color: white;
+		}
+		.warmSpan {
+			background-color: #FFC107;
+			color: black;
+		}
+		.coldSpan {
+			background-color: #007BFF;
+			color: white;
+		}
+		</style>
+
+	</head>
+	<body>
+
+		<div id="gameContainerId">
+
+			<!-- containerFormat -->
+			<!-- <div class="game" style="margin-top: 30px;">
+
+				<h1> Number Guessing Game </h1>
+
+				<div class="statusAreaDivClass">
+					<p> Enter a number between 1-100 and submit... </p>
+				</div>
+
+				<input type="number" id="userGuess#"/>
+				<input type="submit" value="Submit" id="SubmitBtn#" onclick="clicked()"/>
+
+				<div class="historyAreaDivClass">
+					<h2> Your Previous Guesses </h2>
+					<ol id="historyListId#">
+					</ol>
+				</div>
+
+			</div> -->
+
+		</div>
+
+		<script type="text/javascript">
+
+			var randomNos = [];
+
+			// first container
+			createGameContainer(1, 100);
+
+			function clicked( containerNo, numberRange ) {
+
+				var enteredNum = document.getElementById("userGuess"+containerNo).value;
+				document.getElementById("userGuess"+containerNo).value = "";
+
+				if ( enteredNum < 0 || enteredNum > numberRange ) {
+					alert("Number should between 0 and "+numberRange);
+				} else {
+
+					var differance = Math.abs( enteredNum - randomNos[containerNo-1] );
+
+					if ( differance == 0 ) {
+
+						// Correct
+						var listItem = document.createElement("li");
+						var text = document.createTextNode(" Your answer : " + enteredNum + " | Correct ");
+						listItem.appendChild(text);
+						listItem.setAttribute("class", "correctSpan");
+						document.getElementById("historyListId"+containerNo).appendChild(listItem);
+
+						document.getElementById("userGuess"+containerNo).setAttribute("disabled", "true");
+						document.getElementById("SubmitBtn"+containerNo).setAttribute("disabled", "true");
+
+						createGameContainer(containerNo+1, numberRange+100);
+
+					} else if ( differance >= 1 && differance <= 4 ) {
+
+						// Hot!!
+						var listItem = document.createElement("li");
+						var text = document.createTextNode(" Your answer : " + enteredNum + " | difference is less than 5");
+						listItem.appendChild(text);
+						listItem.setAttribute("class", "hotSpan");
+						document.getElementById("historyListId"+containerNo).appendChild(listItem);
+                                                
+
+					} else if ( differance >= 5 && differance <= 15 ) {
+
+						// Warm
+						var listItem = document.createElement("li");
+					var text = document.createTextNode(" Your answer : " + enteredNum + " | difference is more than 5 but less than 15");
+						listItem.appendChild(text);
+						listItem.setAttribute("class", "warmSpan");
+						document.getElementById("historyListId"+containerNo).appendChild(listItem);
+                                                
+
+					} else {
+
+						// Cold
+						var listItem = document.createElement("li");
+						var text = document.createTextNode(" Your answer : " + enteredNum + " | difference is more than 15");
+						listItem.appendChild(text);
+						listItem.setAttribute("class", "coldSpan");
+						document.getElementById("historyListId"+containerNo).appendChild(listItem);
+                                                
+
+					}
+
+					console.log("clicked " + document.getElementById("userGuess"+containerNo).value);
+
+				}
+
+			}
+
+			function createGameContainer( containerNo, numberRange ) {
+
+				var randomNo = Math.floor(Math.random() * numberRange);
+				console.log("Generated random number is : " + randomNo);
+				randomNos.push(randomNo);
+
+				// create game conainer for 1-100, 1-200, 1-300 etc.
+				var gameContainerChild = document.createElement("div");
+				gameContainerChild.setAttribute("class", "game");
+				gameContainerChild.setAttribute("style", "margin-top: 30px");
+
+				var h1 = document.createElement("h1");
+				var text = document.createTextNode(" Number Guessing Game ");
+				h1.appendChild(text);
+
+				var statusArea = document.createElement("div");
+				statusArea.setAttribute("class", "statusAreaDivClass");
+				var p = document.createElement("p");
+				var text = document.createTextNode("Enter a number between 1-" + numberRange + " and submit...");
+				p.appendChild(text);
+				statusArea.appendChild(p);
+
+				var numberField = document.createElement("input");
+				numberField.setAttribute("type", "number");
+				numberField.setAttribute("id", "userGuess"+containerNo);
+
+				var submitField = document.createElement("input");
+				submitField.setAttribute("type", "submit");
+				submitField.setAttribute("value", "submit");
+				submitField.setAttribute("id", "SubmitBtn"+containerNo);
+				submitField.setAttribute("onclick", "clicked(" + containerNo + ", " + numberRange + ")");
+
+				var historyArea = document.createElement("div");
+				historyArea.setAttribute("class", "historyAreaDivClass");
+				var h2 = document.createElement("h2");
+				var ol = document.createElement("ol");
+				ol.setAttribute("id", "historyListId"+containerNo);
+				historyArea.appendChild(h2);
+				historyArea.appendChild(ol);
+
+				gameContainerChild.appendChild(h1);
+				gameContainerChild.appendChild(statusArea);
+				gameContainerChild.appendChild(numberField);
+				gameContainerChild.appendChild(submitField);
+				gameContainerChild.appendChild(historyArea);
+
+				document.getElementById("gameContainerId").appendChild(gameContainerChild);
+
+			}
+		</script>
+
+	</body>
+</html>
